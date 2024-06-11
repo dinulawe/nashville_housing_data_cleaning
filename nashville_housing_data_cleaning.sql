@@ -4,7 +4,6 @@ alter table nashville_data.nashville_housing_data
 modify Saledate date;
 
 
-
 -- Populate Property Address Data
 
 Select *
@@ -12,8 +11,11 @@ From nashville_data.nashville_housing_data
 where PropertyAddress is NUll
 order by ParcelID;
 
+
+
 -- Creating a Join to check if the ParcelID is the same, if it is and the UniqueID is differt populate the property address of the matching(cont'd)
 -- (cont'd) ParcelID if one is empty
+
 Select a.ParcelID, a.PropertyAddress, b.ParcelID, b.PropertyAddress, ifnull(a.PropertyAddress, b.PropertyAddress)
 From nashville_data.nashville_housing_data a
 JOIN nashville_data.nashville_housing_data b
@@ -22,17 +24,15 @@ JOIN nashville_data.nashville_housing_data b
 Where a.PropertyAddress is NUll;
 
 Update nashville_data.nashville_housing_data a
--- From nashville_data.nashville_housing_data a
 JOIN nashville_data.nashville_housing_data b
 	on a.ParcelID = b.ParcelID
     AND a.UniqueID <> b.UniqueID
 Set a.PropertyAddress =  ifnull(a.PropertyAddress, b.PropertyAddress)
 Where a.PropertyAddress is NUll;
 
--- Breaking out Address into Individual Columns(Address,City, State)
 
-Select PropertyAddress
-From nashville_data.nashville_housing_data;
+
+-- Breaking out Address into Individual Columns(Address,City, State)
 
 -- Gets all the information before the first comma in the PropertyAddress
 -- Position returns an Int so -1 index is to get the address without the comma included in it
@@ -53,6 +53,8 @@ Add PropertySplitCity nvarchar(255);
 
 Update nashville_data.nashville_housing_data
 Set PropertySplitCity = substring(PropertyAddress,position("," IN PropertyAddress) +1, length(PropertyAddress));
+
+
 
 -- Getting the State, City and Address from OwnerAddress
 
